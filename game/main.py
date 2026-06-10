@@ -18,7 +18,7 @@ while running:
     #caps the framerate at 60fps
     clock.tick(60)
     #sets smiley position
-    screen.blit(smiley, (x, 0))
+    # screen.blit(smiley, (x, 0))
     #get mouse position
     mousepos = pg.mouse.get_pos()
     #checks to see if left click has been pressed
@@ -34,7 +34,7 @@ while running:
     #     print(f"clicked {amount_clicks} times")
     #draws rectangle
     pg.draw.rect(screen,(255*mcollision,255,0),target)
-    x+=1
+    # x+=1
     #render text
     text = font.render("test game", True, (0,0,0))
     text2 = font.render("(it's a little ugly but that's ok :3)", True, (0,0,0))
@@ -61,4 +61,4 @@ pg.quit()
 #moves object across screen
 #detects collisions (specifically for the mouse but this can be modified for other objects too)
 #detects clicks on certain objects (in TWO different ways :0)
-#changes rectangle colours
+#counts the amount of mouse clicks on objects
