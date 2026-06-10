@@ -11,6 +11,7 @@ font = pg.font.Font(None, size=30)
 
 running = True
 x=-500
+amount_clicks = 0
 while running:
     #sets the screen colour
     screen.fill((100,100,100))
@@ -21,14 +22,16 @@ while running:
     #get mouse position
     mousepos = pg.mouse.get_pos()
     #checks to see if left click has been pressed
-    mclick = pg.mouse.get_pressed()[0]
+    # mclick = pg.mouse.get_pressed()[0]
     #basic rectangle to detect for collisions
     target = pg.Rect(300,0,160,280)
     #detects mouse collisions
     collision = target.collidepoint(mousepos)
     mcollision = False
-    if collision == True and mclick == True:
-        mcollision = True
+    # if collision == True and mclick == True:
+    #     mcollision = True
+    #     amount_clicks += 1
+    #     print(f"clicked {amount_clicks} times")
     #draws rectangle
     pg.draw.rect(screen,(255*mcollision,255,0),target)
     x+=1
@@ -41,11 +44,11 @@ while running:
     #(prevents the game from freezing)
     for event in pg.event.get():
         #checks if the mouse is being clicked over a specific object
-        #good basic code but would like to check if I can do this using variables 
-        #as it'll probably be more efficient
-        # if event.type == pg.MOUSEBUTTONDOWN:
-        #     if collision == True:
-        #         print("click")
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if collision == True:
+                amount_clicks +=1
+                print(f"clicked {amount_clicks} times")
+                mcollision = True
         if event.type == pg.QUIT:
             running = False
     #updates display
