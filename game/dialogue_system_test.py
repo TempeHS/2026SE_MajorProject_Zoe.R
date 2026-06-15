@@ -13,6 +13,7 @@ running = True
 amount_clicks = 0
 data = []
 in_dialogue = False
+boxobject = pg.Rect(255,150,200,200)
 
 #get dialogue data
 with open("dialogue_placeholder") as file:
@@ -21,36 +22,51 @@ with open("dialogue_placeholder") as file:
         data.append(row)
 file.close
 
+#visual setup (clears screen completely)
+def vis_setup():
+    screen.fill((50,100,150))
+    pg.draw.rect(screen,(255,255,0), boxobject)
+    pg.display.flip()
+
+#dialogue
+def dialogue(amount_clicks):
+    vis_setup()
+    pg.draw.rect(screen,(0,0,0),(70,400,500,200))                
+    print(data[amount_clicks])
+    dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+    screen.blit(dialogue_text,(100,420))
+    print(amount_clicks)
+    pg.display.flip()
+
+vis_setup()
 #main gameplay loop
 while running:
     #variable setup
     clock.tick(60)
     mousepos = pg.mouse.get_pos()
-    boxobject = pg.Rect(255,150,200,200)
-    dialogue = pg.Rect(250,100,100,100)
     collision = boxobject.collidepoint(mousepos)
-    #visual setup
-    screen.fill((50,100,150))
-    pg.draw.rect(screen,(255,255,0), boxobject)
     #event loops
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
         if event.type == pg.MOUSEBUTTONDOWN:
             if collision == True and in_dialogue == False:
-                in_dialogue = True
-        if in_dialogue == True:
-            if event.type == pg.KEYDOWN and event.unicode == ' ':
-                if amount_clicks <= len(data) - 1:
-                    print(data[amount_clicks])
-                    pg.draw.rect(screen,(255,0,255),dialogue)
-                    text3 = font.render(data[amount_clicks], True, (0,0,0))
-                    screen.blit(text3,(150,50))
-                    amount_clicks +=1
+                if amount_clicks == 0:
+                    in_dialogue = True
+                    dialogue(amount_clicks)
+                    amount_clicks+=1
                 else:
-                    text3 = font.render(data[len(data) - 1], True, (0,0,0))
-                    screen.blit(text3,(150,50))
-    pg.display.flip()
+                    pass
+        if in_dialogue == True:
+            if amount_clicks >= len(data):
+                in_dialogue = False
+                print("dialogue finished")
+                vis_setup()
+            if event.type == pg.KEYDOWN and event.unicode == ' ':
+                dialogue(amount_clicks)
+                amount_clicks+=1
+                
+                
 pg.quit()
 
 #dialogue logic
