@@ -1,4 +1,5 @@
-#ok whatever i'm starting from scratch
+#general tests of some basic pygame features
+#(and hopefully the most disorganised these files will get)
 import pygame as pg
 import time
 
@@ -34,6 +35,7 @@ while running:
     dialoguebox = pg.Rect(250,100,100,100)
     #detects mouse collisions
     collision = target.collidepoint(mousepos)
+    in_dialogue = False
     # mcollision = False
     # if collision == True and mclick == True:
     #     mcollision = True
@@ -58,6 +60,7 @@ while running:
                 else:
                     print(data[len(data) - 1])
                 amount_clicks +=1
+        #testing for if keys are pressed
         if event.type == pg.KEYDOWN:
             text = font.render("test game", True, (0,0,0))
             screen.blit(text,(250,25))
