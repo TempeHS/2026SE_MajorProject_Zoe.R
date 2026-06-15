@@ -31,6 +31,7 @@ while running:
     # mclick = pg.mouse.get_pressed()[0]
     #basic rectangle to detect for collisions
     target = pg.Rect(225,150,200,200)
+    dialoguebox = pg.Rect(250,100,100,100)
     #detects mouse collisions
     collision = target.collidepoint(mousepos)
     # mcollision = False
@@ -49,8 +50,11 @@ while running:
         #checks if the mouse is being clicked over a specific object
         if event.type == pg.MOUSEBUTTONDOWN:
             if collision == True:
-                if amount_clicks < len(data) - 1:
+                if amount_clicks <= len(data) - 1:
                     print(data[amount_clicks])
+                    pg.draw.rect(screen,(255,0,255),dialoguebox)
+                    text3 = font.render(data[amount_clicks], True, (0,0,0))
+                    screen.blit(text3,(150,50))
                 else:
                     print(data[len(data) - 1])
                 amount_clicks +=1
