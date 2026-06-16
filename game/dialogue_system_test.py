@@ -11,16 +11,10 @@ font = pg.font.Font(None, size=30)
 #setting up variables
 running = True
 amount_clicks = 0
+text_file = ""
 data = []
 in_dialogue = False
 boxobject = pg.Rect(255,150,200,200)
-
-#get dialogue data
-with open("dialogue_placeholder") as file:
-    for line in file:
-        row = line.rstrip()
-        data.append(row)
-file.close
 
 #visual setup (clears screen completely)
 def vis_setup():
@@ -28,15 +22,34 @@ def vis_setup():
     pg.draw.rect(screen,(255,255,0), boxobject)
     pg.display.flip()
 
+#setup for a blank dialogue box because the dialogue box sometimes disappearing was getting annoying
+def blank_dialogue_box():
+    screen.fill((50,100,150))
+    pg.draw.rect(screen,(255,255,0), boxobject)
+    pg.draw.rect(screen,(0,0,0),(70,400,500,200))
+    cont_text = font.render("press SPACE to continue", True, (255,255,255))
+    screen.blit(cont_text, (100, 560))                
+    pg.display.flip()
+
+#get dialogue data
+def get_dialogue_data(text_file):
+    with open(text_file) as file:
+        for line in file:
+            row = line.rstrip()
+            data.append(row)
+    file.close
+
 #dialogue
 def dialogue(amount_clicks):
-    vis_setup()
-    pg.draw.rect(screen,(0,0,0),(70,400,500,200))                
+    blank_dialogue_box()
     print(data[amount_clicks])
     dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
     screen.blit(dialogue_text,(100,420))
     print(amount_clicks)
     pg.display.flip()
+
+def choice():
+    pass
 
 vis_setup()
 #main gameplay loop
@@ -52,11 +65,16 @@ while running:
         if event.type == pg.MOUSEBUTTONDOWN:
             if collision == True and in_dialogue == False:
                 if amount_clicks == 0:
+                    get_dialogue_data("dialogue_placeholder")
                     in_dialogue = True
+                    #brings the first line of dialogue up when the object is clicked rather than on the first space
                     dialogue(amount_clicks)
                     amount_clicks+=1
                 else:
-                    pass
+                    vis_setup()
+                    dialogue_complete = font.render("You finished the dialogue!!! yay!!!", True, (255,255,255))
+                    screen.blit(dialogue_complete,(100,420))
+                    pg.display.flip()
         if in_dialogue == True:
             if amount_clicks >= len(data):
                 in_dialogue = False
