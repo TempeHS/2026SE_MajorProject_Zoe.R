@@ -48,10 +48,35 @@ def dialogue(amount_clicks):
     print(amount_clicks)
     pg.display.flip()
 
-def choice():
-    pass
+#choice
+def choice(amount_clicks):
+    # for every line starting with ">" (this means it is a choice)
+    # - do not clear the previous question on screen
+    # - add the option to the text box
+    # - continue adding these options until there are no more choices
+    #   (which in this case is only two, but i might modify it to fit more if i can get it working)
+    # this won't be hard but it will be VERY VERY annoying because there are a lot of factors to account for
+    # alternatively the player could make the choice in the terminal (which might be simpler for testing other stuff)
+    # but this is supposed to be a game and also that would suck for web support unless there was a way to display the terminal in the web browser
+   
+    # after this - for every line starting with a number, this counts as a dialogue response
+    # the dialogue response which gets printed will depend on the choice the player has made
+    # this one is pretty simple i think
+    blank_dialogue_box()
+    toomanydialoguevariables = data[amount_clicks]
+    if "> " in toomanydialoguevariables:
+        print(f"{line} - choice")
+    elif "1. " in toomanydialoguevariables:
+        print(f"{line} - response 1")
+    elif "2. " in toomanydialoguevariables:
+        print(f"{line} - response 2")
+    else:
+        dialogue_text = font.render(toomanydialoguevariables, True, (255,255,255))
+        screen.blit(dialogue_text,(100,420))
 
 vis_setup()
+get_dialogue_data("dialogue_choice")
+choice()
 #main gameplay loop
 while running:
     #variable setup
