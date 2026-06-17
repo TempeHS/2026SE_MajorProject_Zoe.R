@@ -14,6 +14,8 @@ amount_clicks = 0
 text_file = ""
 data = []
 in_dialogue = False
+in_choice = False
+player_choice = ""
 boxobject = pg.Rect(255,150,200,200)
 
 #visual setup (clears screen completely)
@@ -34,8 +36,8 @@ def blank_dialogue_box():
 #get dialogue data
 def get_dialogue_data(text_file):
     with open(text_file) as file:
-        for line in file:
-            row = line.rstrip()
+        for lines in file:
+            row = lines.rstrip()
             data.append(row)
     file.close
 
@@ -49,7 +51,14 @@ def dialogue(amount_clicks):
     pg.display.flip()
 
 #choice
-def choice(amount_clicks):
+def choice(amount_clicks, player_choice):
+    global in_choice
+    choices = []
+    text_y = 0
+    for line in data:
+        if "> " in line:
+            choices.append(line)
+            data.remove(line)
     # for every line starting with ">" (this means it is a choice)
     # - do not clear the previous question on screen
     # - add the option to the text box
@@ -62,21 +71,44 @@ def choice(amount_clicks):
     # after this - for every line starting with a number, this counts as a dialogue response
     # the dialogue response which gets printed will depend on the choice the player has made
     # this one is pretty simple i think
+    line = data[amount_clicks]
     blank_dialogue_box()
-    toomanydialoguevariables = data[amount_clicks]
-    if "> " in toomanydialoguevariables:
-        print(f"{line} - choice")
-    elif "1. " in toomanydialoguevariables:
-        print(f"{line} - response 1")
-    elif "2. " in toomanydialoguevariables:
-        print(f"{line} - response 2")
-    else:
-        dialogue_text = font.render(toomanydialoguevariables, True, (255,255,255))
+    if "* " in line:
+        in_choice = True
+        blank_dialogue_box()
+        dialogue_text = font.render(line.strip("* "), True, (255,255,255))
         screen.blit(dialogue_text,(100,420))
+        for c in choices:
+            text_y += 20
+            choice_c = font.render(c, True, (255,255,255))
+            screen.blit(choice_c,(100,430+text_y))
+        pg.display.flip() 
+        print(in_choice)
+    elif "1. " in line:
+        if player_choice == "Y":
+            in_choice = False
+            blank_dialogue_box()
+            dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+            screen.blit(dialogue_text,(100,420))
+            pg.display.flip()
+        else:
+            pass
+    elif "2. " in line:
+        if player_choice == "N":
+            blank_dialogue_box()
+            dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+            screen.blit(dialogue_text,(100,420))
+            pg.display.flip()
+        else:
+            pass
+    else:
+        in_choice = in_choice
+        blank_dialogue_box()
+        dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+        screen.blit(dialogue_text,(100,420))
+        pg.display.flip()
 
 vis_setup()
-get_dialogue_data("dialogue_choice")
-choice()
 #main gameplay loop
 while running:
     #variable setup
@@ -90,10 +122,10 @@ while running:
         if event.type == pg.MOUSEBUTTONDOWN:
             if collision == True and in_dialogue == False:
                 if amount_clicks == 0:
-                    get_dialogue_data("dialogue_placeholder")
+                    get_dialogue_data("dialogue_choice")
                     in_dialogue = True
                     #brings the first line of dialogue up when the object is clicked rather than on the first space
-                    dialogue(amount_clicks)
+                    choice(amount_clicks, player_choice)
                     amount_clicks+=1
                 else:
                     vis_setup()
@@ -105,19 +137,23 @@ while running:
                 in_dialogue = False
                 print("dialogue finished")
                 vis_setup()
-            if event.type == pg.KEYDOWN and event.unicode == ' ':
-                dialogue(amount_clicks)
+            if event.type == pg.KEYDOWN and event.unicode == ' ' and in_choice == False:
+                choice(amount_clicks, player_choice)
                 amount_clicks+=1
-                
-                
+            if event.type == pg.KEYDOWN and event.unicode == ' ' and in_choice == True:
+                pg.quit()
+            if event.type == pg.KEYDOWN and event.unicode == 'y' and in_choice == True:
+                player_choice = "Y"
+                in_choice = False
+                amount_clicks+=1
+                choice(amount_clicks, player_choice)
+            if event.type == pg.KEYDOWN and event.unicode == 'n' and in_choice == True:
+                player_choice = "N"
+                in_choice = False
+                amount_clicks+=1
+                choice(amount_clicks, player_choice)
 pg.quit()
 
-#dialogue logic
-#by default in_dialogue is set to false (player is not interacting with a set of dialogue)
-#when the player clicks on the box object, it starts the dialogue (in_dialogue is set to true)
-#as player presses a certain key (probably space), it goes through all the dialogue
-#after all of the dialogue has finished, the dialogue disappears, in_dialogue is set to false
-#after this, if the player tries interacting with the dialogue box it either does not produce dialogue (easier to code)
-#or repeats the last line from the dialogue file and closes the dialogue
-
-#set this up simply and then optimise it by changing it to OOP
+#TO DO - CHOICES
+#find out how to skip dialogue entirely instead of giving a blank box
+#find out why it keeps repeating dialogue
