@@ -1,3 +1,7 @@
+#a copy of the dialogue system tests where I attempted to fix the issues i was having by putting each category of dialogue into different lists
+#(the key word here is attempted)
+
+#I copied this code over while I was working on it in my main dialogue file, so some of the parts are quite unfinished
 #imports
 import pygame as pg
 import time
@@ -58,6 +62,8 @@ def choice(amount_clicks, player_choice):
     global in_dialogue
     #for formatting the choices
     choices = []
+    choice_1_dialogue = []
+    choice_2_dialogue = []
     text_y = 0
 
     if amount_clicks >= len(data):

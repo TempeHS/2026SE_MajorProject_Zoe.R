@@ -35,11 +35,14 @@ def blank_dialogue_box():
 
 #get dialogue data
 def get_dialogue_data(text_file):
-    with open(text_file) as file:
-        for lines in file:
-            row = lines.rstrip()
-            data.append(row)
-    file.close
+    try:
+        with open(text_file) as file:
+            for lines in file:
+                row = lines.rstrip()
+                data.append(row)
+        file.close
+    except FileNotFoundError:
+        print("Dialogue data not found")
 
 #dialogue
 def dialogue(amount_clicks):
@@ -50,21 +53,16 @@ def dialogue(amount_clicks):
     print(amount_clicks)
     pg.display.flip()
 
-#create function for skipping dialogue
-#change factor to player choice rather than characters maybe?
-#do NOT try to sort them into different lists even though you'd THINK that would be the easy option wouldnt you
-#i havent even started on the killer feature yet bro im so fried it better be easier than this
-
 #choice
-def choice(amount_clicks, player_choice):
+def choice(player_choice):
     #in_choice variable had to be made global otherwise the code switching it from false to true didnt work
     #(I didn't check for in_dialogue, but I assume it'd be the same)
     global in_choice
     global in_dialogue
+    global amount_clicks
     #for formatting the choices
     choice_1 = 0
     choice_2 = 0
-    modifiedclicks = 0
     choices = []
     text_y = 0
 
@@ -78,9 +76,9 @@ def choice(amount_clicks, player_choice):
                 choices.append(line)
                 del data[data.index(line)]
         for line in data:
-            if "1. " in line:
+            if "1- " in line:
                 choice_1 +=1
-            if "2. " in line:
+            if "2- " in line:
                 choice_2 +=1
         line = data[amount_clicks]
         blank_dialogue_box()
@@ -96,35 +94,37 @@ def choice(amount_clicks, player_choice):
                 choice_c = font.render(c, True, (255,255,255))
                 screen.blit(choice_c,(100,430+text_y))
             pg.display.flip() 
-            print(in_choice)
         #if the player chooses 'Y'
-        elif "1. " in line:
+        elif "1- " in line:
             if player_choice != "Y" and amount_clicks + choice_1 < len(data):
                 in_dialogue = False
                 amount_clicks += choice_1
-                print(choice_1, amount_clicks)
-                dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+                dialogue_text = font.render(data[amount_clicks].strip("2- "), True, (255,255,255))
                 screen.blit(dialogue_text,(100,420))   
+                pg.display.flip()
                 in_dialogue = True
+                print(f"{amount_clicks} - Y line")
             elif player_choice == "Y":
                 in_choice = False
                 blank_dialogue_box()
-                dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+                dialogue_text = font.render(data[amount_clicks].strip("1- "), True, (255,255,255))
                 screen.blit(dialogue_text,(100,420))
                 pg.display.flip()
             else:
                 pass
         #if the player chooses 'N'
-        elif "2. " in line:
+        elif "2- " in line:
+            print(f"{amount_clicks} - N line")
             if player_choice != "N" and amount_clicks + choice_2 < len(data):
                 in_dialogue = False
                 amount_clicks += choice_2
-                dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
-                screen.blit(dialogue_text,(100,420))   
+                dialogue_text = font.render(data[amount_clicks].strip("1- "), True, (255,255,255))
+                screen.blit(dialogue_text,(100,420))  
+                pg.display.flip() 
                 in_dialogue = True
             elif player_choice == "N":
                 blank_dialogue_box()
-                dialogue_text = font.render(data[amount_clicks], True, (255,255,255))
+                dialogue_text = font.render(data[amount_clicks].strip("2- "), True, (255,255,255))
                 screen.blit(dialogue_text,(100,420))
                 pg.display.flip()
             else:
@@ -153,7 +153,7 @@ while running:
                     get_dialogue_data("dialogue_choice")
                     in_dialogue = True
                     #brings the first line of dialogue up when the object is clicked rather than on the first space
-                    choice(amount_clicks, player_choice)
+                    choice(player_choice)
                     amount_clicks+=1
                 else:
                     vis_setup()
@@ -167,23 +167,22 @@ while running:
                 vis_setup()
             #regular dialogue progression
             if event.type == pg.KEYDOWN and event.unicode == ' ' and in_choice == False:
-                choice(amount_clicks, player_choice)
+                choice(player_choice)
                 amount_clicks+=1
+                print(amount_clicks)
             #choice dialogue progression
             if event.type == pg.KEYDOWN and event.unicode == ' ' and in_choice == True:
                 pass
             if event.type == pg.KEYDOWN and event.unicode == 'y' and in_choice == True:
                 player_choice = "Y"
                 in_choice = False
-                choice(amount_clicks, player_choice)
+                choice(player_choice)
                 amount_clicks+=1
             if event.type == pg.KEYDOWN and event.unicode == 'n' and in_choice == True:
                 player_choice = "N"
                 in_choice = False
-                choice(amount_clicks, player_choice)
+                choice(player_choice)
                 amount_clicks+=1
 pg.quit()
 
-#TO DO - CHOICES
-#find out how to skip dialogue entirely instead of giving a blank box - aughgkhgjhgh
-#need to figure out a way to temporarily disable pressing space to skip
+#
