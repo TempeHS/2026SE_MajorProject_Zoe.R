@@ -1,6 +1,7 @@
 #imports
 import pygame as pg
 import time
+import sqlite3 as sql
 
 #basic setup
 pg.init()

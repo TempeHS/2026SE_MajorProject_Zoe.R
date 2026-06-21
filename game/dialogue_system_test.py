@@ -184,5 +184,3 @@ while running:
                 choice(player_choice)
                 amount_clicks+=1
 pg.quit()
-
-#
