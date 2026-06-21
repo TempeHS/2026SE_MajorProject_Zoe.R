@@ -30,17 +30,17 @@ dialogue2complete = 0
 
 #visual setup
 def vis_setup():
-    screen.fill((50,100,150))
-    pg.draw.rect(screen,(255,255*dialogue1complete,0), boxobject)
-    pg.draw.rect(screen,(255,255*dialogue2complete,255), boxobject2)
-    pg.draw.rect(screen,(255,0,255), menuobject)
+    screen.fill((26, 27, 59))
+    pg.draw.rect(screen,(204,90*dialogue1complete,149), boxobject)
+    pg.draw.rect(screen,(99,219*dialogue2complete,149), boxobject2)
+    pg.draw.rect(screen,(213,220,235), menuobject)
     pg.display.flip()
     
 #setup for a blank dialogue box
 def blank_dialogue_box():
-    screen.fill((50,100,150))
-    pg.draw.rect(screen,(255,255*dialogue1complete,0), boxobject)
-    pg.draw.rect(screen,(255,255*dialogue2complete,255), boxobject2)
+    screen.fill((26, 27, 59))
+    pg.draw.rect(screen,(204,90*dialogue1complete,149), boxobject)
+    pg.draw.rect(screen,(99,219*dialogue2complete,149), boxobject2)
     pg.draw.rect(screen,(0,0,0),(70,400,500,200))
     cont_text = font.render("press SPACE to continue", True, (255,255,255))
     screen.blit(cont_text, (100, 560))                
@@ -49,7 +49,7 @@ def blank_dialogue_box():
 #get dialogue data
 def get_dialogue_data(text_file):
     try:
-        with open(text_file) as file:
+        with open(f"data/{text_file}") as file:
             for lines in file:
                 row = lines.rstrip()
                 data.append(row)
@@ -164,7 +164,7 @@ def choice(player_choice):
 
 #save
 def updatesave(dialogue1complete,dialogue2complete): 
-    connection = sql.connect("saves.db", check_same_thread=False)
+    connection = sql.connect(f"data/saves.db", check_same_thread=False)
     cursor = connection.cursor()
     cursor.execute(f'UPDATE save_files SET dialogue1complete = ?, dialogue2complete = ? WHERE rowid = 1', (dialogue1complete,dialogue2complete))
     connection.commit()
@@ -174,7 +174,7 @@ def updatesave(dialogue1complete,dialogue2complete):
 def loadsave():
     global dialogue1complete
     global dialogue2complete
-    connection = sql.connect("saves.db", check_same_thread=False)
+    connection = sql.connect(f"data/saves.db", check_same_thread=False)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM save_files")
     details = cursor.fetchall()
@@ -188,16 +188,16 @@ def openmenu():
     vis_setup()
     global in_menu
     in_menu = True
-    pg.draw.rect(screen,(0,255,255), (75,75,500,300))
+    pg.draw.rect(screen,(160, 134, 191), (75,75,500,300))
     menu_text = font.render("MENU", True, (0,0,0))
     screen.blit(menu_text,(100,100))
-    pg.draw.rect(screen,(255,0,255), save_progress)
+    pg.draw.rect(screen,(83, 68, 130), save_progress)
     menu_text = font.render("SAVE", True, (0,0,0))
     screen.blit(menu_text,(290,170))
-    pg.draw.rect(screen,(255,255,0), load_progress)
+    pg.draw.rect(screen,(83, 68, 130), load_progress)
     menu_text = font.render("LOAD", True, (0,0,0))
     screen.blit(menu_text,(290,245))
-    pg.draw.rect(screen,(255,255,255), exit_menu)
+    pg.draw.rect(screen,(83, 68, 130), exit_menu)
     menu_text = font.render("EXIT MENU", True, (0,0,0))
     screen.blit(menu_text,(265,320))
     pg.display.flip()

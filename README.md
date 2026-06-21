@@ -1,6 +1,6 @@
 # Project Title
 
-Simple overview of use/purpose.
+**NOTE** *- if there are any issues with running this program on web which I haven't accounted for, it an be run by importing the project into VSCode (either by downloading or by cloning with github desktop)*
 
 ## Usage
 
