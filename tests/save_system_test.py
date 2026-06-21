@@ -54,8 +54,7 @@ def loadsave():
     cursor.execute("SELECT * FROM save_files")
     details = cursor.fetchone()
     print(details)
-    for var in details:
-        amount_clicks = var
+    amount_clicks = details[0]
 
 #open save menu
 def openmenu():
@@ -80,7 +79,6 @@ def openmenu():
 #main gameplay loop
 vis_setup()
 while running:
-    print(in_menu)
     #variable setup
     clock.tick(60)
     mousepos = pg.mouse.get_pos()
