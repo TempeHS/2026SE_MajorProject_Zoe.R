@@ -13,6 +13,7 @@ running = True
 amount_clicks = 0
 text_file = ""
 data = []
+choices = []
 in_dialogue = False
 in_choice = False
 player_choice = ""
@@ -60,10 +61,10 @@ def choice(player_choice):
     global in_choice
     global in_dialogue
     global amount_clicks
+    global choices
     #for formatting the choices
     choice_1 = 0
     choice_2 = 0
-    choices = []
     text_y = 0
 
     if amount_clicks >= len(data):
@@ -86,14 +87,16 @@ def choice(player_choice):
         if "* " in line:
             in_choice = True
             blank_dialogue_box()
-            dialogue_text = font.render(line.strip("* "), True, (255,255,255))
-            screen.blit(dialogue_text,(100,420))
-            #displays choices
+            print(choices)
             for c in choices:
+                print("sonion")
                 text_y += 20
                 choice_c = font.render(c, True, (255,255,255))
                 screen.blit(choice_c,(100,430+text_y))
-            pg.display.flip() 
+            dialogue_text = font.render(line.strip("* "), True, (255,255,255))
+            screen.blit(dialogue_text,(100,420))
+            #displays choices
+            pg.display.flip()
         #if the player chooses 'Y'
         elif "1- " in line:
             if player_choice != "Y" and amount_clicks + choice_1 < len(data):
@@ -150,7 +153,7 @@ while running:
         if event.type == pg.MOUSEBUTTONDOWN:
             if collision == True and in_dialogue == False:
                 if amount_clicks == 0:
-                    get_dialogue_data("dialogue_choice")
+                    get_dialogue_data("dialogue_2")
                     in_dialogue = True
                     #brings the first line of dialogue up when the object is clicked rather than on the first space
                     choice(player_choice)
@@ -184,5 +187,3 @@ while running:
                 choice(player_choice)
                 amount_clicks+=1
 pg.quit()
-
-#
