@@ -7,8 +7,6 @@ def updatesave(amountclicks):
     connection = sql.connect("test.db", check_same_thread=False)
     cursor = connection.cursor()
     cursor.execute(f'UPDATE save_files SET amount_clicks = ? WHERE rowid = 1', (amountclicks,))
-    cursor.execute("SELECT * FROM save_files")
-    details = cursor.fetchall()
     connection.commit()
     connection.close()
 
